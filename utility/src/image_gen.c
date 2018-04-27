@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "bmp_util/bmp.h"
+#include "../include/bmp.h"
 
 int main(int argc, char ** argv)
 {

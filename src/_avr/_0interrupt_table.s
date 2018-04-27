@@ -5,7 +5,9 @@
 
 .include "./src/_avr/atmega328mm.s"
 
-.TEXT
+.global init
+.text
+init:
 .ORG 0x0000           ;; Interrupts, highest priority first
 jmp RESET             ;; 3  Reset Handler
 jmp INT0              ;; 3  External Interrupt Request 0

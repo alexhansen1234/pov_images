@@ -19,14 +19,16 @@ ASM_SRC := $(wildcard ./$(SRC_DIR)/*.s)
 C_SRC := $(wildcard ./$(SRC_DIR)/*.c)
 
 $(BINARY): $(ELF)
+	@echo Generating Binary $(BINARY)
 	@$(OBJCOPY) $(OBJCOPY_FLAGS) $(ELF) $(BINARY)
 
 $(ELF): $(ASM_OBJ) $(C_OBJ)
+	@echo Linking Objects to target $(ELF)
 	@$(LD) -T config/avr2.xn $(LD_FLAGS) -o $(ELF) $(ASM_OBJ) $(C_OBJ)
 
 .s.o:
 	@echo Assembling $<
-	$(CC) $(CC_FLAGS) $(ASM_INCLUDE) -o $@ $<
+	@$(CC) $(CC_FLAGS) $(ASM_INCLUDE) -o $@ $<
 
 .c.o:
 	@echo Compiling $<
