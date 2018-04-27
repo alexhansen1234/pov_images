@@ -59,3 +59,8 @@ endif
 
 clean:
 	rm -f $(BINARY) $(ELF) $(ASM_OBJ) $(C_OBJ)
+
+push:
+	git add .
+	git commit -m "update"
+	git push origin master	
