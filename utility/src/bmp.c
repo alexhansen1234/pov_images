@@ -198,7 +198,7 @@ void free_BMP(struct BMP * bmp)
   free(bmp);
 }
 
-void generate_image_header_atmega328p(struct BMP * bmp, const char * original_file_name)
+void generate_image_header_atmega328p(struct BMP * bmp, const char * original_file_name, const char * output_directory)
 {
   int size = 0;
   int i=0, j=0;
@@ -226,8 +226,9 @@ void generate_image_header_atmega328p(struct BMP * bmp, const char * original_fi
 
   size = 0;
   char * string = file_name;
-  char * output_file_name = (char *)malloc(sizeof(char) * (strlen("_image.s") + strlen(string) + 1));
-  strcpy(output_file_name, string);
+  char * output_file_name = (char *)malloc(sizeof(char) * (strlen("_image.s") + strlen(string) + strlen(output_directory)+ 1));
+  strcpy(output_file_name, output_directory);
+  strcat(output_file_name, string);
   strcat(output_file_name, "_image.s");
 
   FILE * fp = fopen(output_file_name, "w");
