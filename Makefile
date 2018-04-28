@@ -64,7 +64,6 @@ push: $(SUBDIR)
 	git push origin master
 
 $(SUBDIR):
-	@echo $(SUBDIR)
 	@if [ -e $@/Makefile ]; then\
 		$(MAKE) -C $@ $(SUBDIR_CMD);\
 	fi
