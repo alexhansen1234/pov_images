@@ -11,9 +11,9 @@ generate image headers from root directory by
 	./utility/make
 	./utility/image_header_gen /path/to/FILENAME.bmp >> ./src/image_headers/FILENAME_image.s
 
-APA102 use SPI to drive data into registers.
+APA102 use SPI to drive data into shift registers, which require clock and data lines.
 
-The port and bit defintions are in assigned in
+Output port, clk_bit and data_bit need to be defined in
 
 	./src/apa102/display_pixel_apa102.s
 
@@ -22,6 +22,9 @@ On lines
 	port = 0xZZ
 	clk_bit = X
 	data_bit = Y
+
+Currently, clk_bit and data_bit are bit fields in register port, but the source can easily
+be modified to have separate registers control clock and data lines.
 
 The memory map for ATMEGA328P may be found in
 

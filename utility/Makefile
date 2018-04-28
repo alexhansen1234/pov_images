@@ -9,31 +9,36 @@ CPP_FLAGS :=
 # Directories
 SRC_DIR := src
 INCLUDE_DIR := include
-OBJ_DIR := obj
+BIN_DIR := bin
 
 # Libraries
 LIBS :=
 
 SRC := $(wildcard $(SRC_DIR)/*.c)
-OBJ := $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC))
+OBJ := $(patsubst $(SRC_DIR)/%.c, $(BIN_DIR)/%.o, $(SRC))
 
-$(TARGET): $(OBJ_DIR) $(OBJ)
+$(TARGET): $(BIN_DIR) $(OBJ)
 	@echo Building binary $@
 	@$(CC) $(C_FLAGS) $(OBJ) $(LIBS) -o $@
 
-$(OBJ_DIR):
+$(BIN_DIR):
 	@echo Creating directory $@
-	@mkdir $(OBJ_DIR)
+	@mkdir $(BIN_DIR)
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+$(BIN_DIR)/%.o: $(SRC_DIR)/%.c
 	@echo Compiling $< to $@
 	@$(CC) $(C_FLAGS) $(CPP_FLAGS) -c -o $@ $<
 
 clean:
-	@echo Removing $(OBJ)
-	@rm -f -r obj
+	@if [ -d $(BIN_DIR) ]; then\
+		echo Cleaning $(BIN_DIR);\
+		echo Removing $(OBJ);\
+		rm -f -r $(BIN_DIR);\
+	fi
 
 cleaner:
-	@echo Removing $(TARGET)
 	@make clean
-	@rm $(TARGET)
+	@if [ -e $(TARGET) ]; then\
+		echo Removing $(TARGET);\
+		rm $(TARGET);\
+	fi
