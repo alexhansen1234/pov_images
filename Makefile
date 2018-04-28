@@ -58,7 +58,7 @@ cleaner:
 	fi
 
 push: $(SUBDIR)
-	make cleaner
+	@make cleaner
 	git add .
 	git commit -m "update"
 	git push origin master
