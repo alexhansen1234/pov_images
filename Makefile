@@ -6,64 +6,52 @@ CC_FLAGS := -Wall -c -mmcu=atmega328p
 
 LD := avr-ld
 LD_FLAGS := -e init
+LD_CONFIG := -T ./config/avr2.xn
 
 OBJCOPY := avr-objcopy
 OBJCOPY_FLAGS := -O ihex
 
 SRC_DIR := src
+INCLUDE_DIR := include
+BUILD_DIR := src/bin
 
-ASM_OBJ := $(patsubst %.s, %.o, $(wildcard ./$(SRC_DIR)/*/*.s))
-C_OBJ := $(patsubst %.c, %.o, $(wildcard ./$(SRC_DIR)/*.c))
+ASM_SRC := $(wildcard $(SRC_DIR)/*/*.s)
+C_SRC := $(wildcard $(SRC_DIR)/*.c)
 
-ASM_SRC := $(wildcard ./$(SRC_DIR)/*.s)
-C_SRC := $(wildcard ./$(SRC_DIR)/*.c)
+ASM_OBJ := $(patsubst %.s, $(BUILD_DIR)/%.o, $(notdir $(ASM_SRC)))
+C_OBJ := $(patsubst %.c, $(BUILD_DIR)/%.o, $(notdir $(C_SRC)))
 
-$(BINARY): $(ELF)
+$(BINARY): $(BUILD_DIR) $(ELF)
 	@echo Generating Binary $(BINARY)
 	@$(OBJCOPY) $(OBJCOPY_FLAGS) $(ELF) $(BINARY)
 
+$(BUILD_DIR):
+	@echo Generating Directory $(BUILD_DIR)
+	@mkdir $(BUILD_DIR)
+
 $(ELF): $(ASM_OBJ) $(C_OBJ)
 	@echo Linking Objects to target $(ELF)
-	@$(LD) -T config/avr2.xn $(LD_FLAGS) -o $(ELF) $(ASM_OBJ) $(C_OBJ)
+	@$(LD) $(LD_CONFIG) $(LD_FLAGS) -o $(ELF) $(ASM_OBJ) $(C_OBJ)
 
-.s.o:
-	@echo Assembling $<
-	@$(CC) $(CC_FLAGS) $(ASM_INCLUDE) -o $@ $<
+$(BUILD_DIR)/%.o: $(SRC_DIR)/*/%.s
+	@echo Assembling $@ from $<
+	@$(CC) $(CC_FLAGS) -o $(BUILD_DIR)/$(notdir $@) $<
 
-.c.o:
-	@echo Compiling $<
-	@$(CC) $(CC_FLAGS) -o $@ $<
-
-ifdef (totally_false)
-bmp_demp.hex: bmp_demo.elf
-	avr-objcopy -O ihex bmp_demo.elf bmp_demo.hex
-bmp_demo.elf: reset.o display_bmp.o lpm_u32.o lpm_u16.o lpm_u8.o test_image.o display_pixel_apa102.o
-	avr-ld -T avr2.xn -e init -o bmp_demo.elf reset.o display_bmp.o lpm_u32.o lpm_u16.o lpm_u8.o program_address.o display_pixel_apa102.o test_image.o
-reset.o: reset.s
-	avr-gcc -Wall -pedantic-errors -c -mmcu=atmega328p -o reset.o reset.s
-display_bmp.o: display_bmp.c progmem/progmem.h program_address.o
-	avr-gcc -Wall -std=c99 -pedantic-errors -O3 -c -mmcu=atmega328p -o display_bmp.o display_bmp.c
-lpm_u32.o: ./progmem/lpm_u32.s
-	avr-gcc -Wall -c -mmcu=atmega328p -o lpm_u32.o ./progmem/lpm_u32.s
-lpm_u16.o: ./progmem/lpm_u16.s
-	avr-gcc -Wall -c -mmcu=atmega328p -o lpm_u16.o ./progmem/lpm_u16.s
-lpm_u8.o: ./progmem/lpm_u8.s
-	avr-gcc -Wall -c -mmcu=atmega328p -o lpm_u8.o ./progmem/lpm_u8.s
-program_address.o: ./progmem/program_address.s
-	avr-gcc -Wall -c -mmcu=atmega328p -o program_address.o ./progmem/program_address.s
-display_pixel_apa102.o: ./apa102/display_pixel_apa102.s
-	avr-gcc -Wall -c -mmcu=atmega328p -o display_pixel_apa102.o ./apa102/display_pixel_apa102.s
-mario_image.o: ./mario_image.s
-	avr-gcc -Wall -c -mmcu=atmega328p -o mario_image.o ./mario_image.s
-test_image.o: ./test_image.s
-	avr-gcc -Wall -c -mmcu=atmega328p -o test_image.o ./test_image.s
-endif
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
+	@echo Compiling $@ from $<
+	@$(CC) $(CC_FLAGS) -o $(BUILD_DIR)/$(notdir $@) $<
 
 clean:
-	rm -f $(BINARY) $(ELF) $(ASM_OBJ) $(C_OBJ)
+	@echo Cleaning build directory
+	@rm -rf $(ELF) $(ASM_OBJ) $(C_OBJ) $(BUILD_DIR)
+
+cleaner:
+	@make clean
+	@echo Cleaning binary $(BINARY)
+	@rm -f $(BINARY)
 
 push:
-	make clean
+	make cleaner
 	git add .
 	git commit -m "update"
 	git push origin master
