@@ -4,7 +4,7 @@
  * named registers and named fields in those registers.
  *
  * eg.
- *      .include './path/to/atmega328mm.s'
+ *      .include "./path/to/atmega328mm.s"
  */
 
 RAMEND = 0x7FF

@@ -12,7 +12,20 @@ generate image headers from root directory by
 	./utility/image_header_gen /path/to/FILENAME.bmp >> ./src/image_headers/FILENAME_image.s
 
 APA102 use SPI to drive data into registers. The configuration is defined in
-./src/apa102/display_pixel_apa102.s
+
+	./src/apa102/display_pixel_apa102.s
+
+On lines
+
+	port = 0xZZ
+	clk_bit = X
+	data_bit = Y
+
+The memory map for ATMEGA328P may be found in
+
+	./src/_avr/atmega328pmm.s
+
+Where the alias for each IO or memory mapped register is defined
 
 Image Transformation utilities located in directory utility.
 Reads RLE4 Bitmap images and outputs data encoded in an ATMEGA328P assembly style array.

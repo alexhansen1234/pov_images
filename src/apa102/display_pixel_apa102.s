@@ -1,12 +1,8 @@
-_temp_reg_ = 0
-_zero_reg_ = 1
-SPL = 0x3d
-SPH = 0x3e
-SREG = 0x3f
+.include "./src/_avr/atmega328mm.s"
+
 data_bit = 6
 clk_bit = 7
-port = 0x0b
-
+port = PORTD
 
 .global display_pixel_apa102
 .text
