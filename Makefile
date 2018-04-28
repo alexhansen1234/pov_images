@@ -57,14 +57,15 @@ cleaner:
 		rm -f $(BINARY);\
 	fi
 
-push: #$(SUBDIR)
+push: $(SUBDIR)
 	make cleaner
 	git add .
 	git commit -m "update"
 	git push origin master
 
 $(SUBDIR):
-	@if [ -e Makefile ]; then\
+	@echo $(SUBDIR)
+	@if [ -e $@/Makefile ]; then\
 		$(MAKE) -C $@ $(SUBDIR_CMD);\
 	fi
 
