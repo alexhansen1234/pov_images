@@ -25,15 +25,15 @@ SUBDIR := $(wildcard */.)
 SUBDIR_CMD := cleaner
 
 $(BINARY): $(BUILD_DIR) $(BUILD_DIR)/$(ELF)
-	@echo Generating Binary $(BINARY)
+	@echo Generating Binary $@
 	@$(OBJCOPY) $(OBJCOPY_FLAGS) $(BUILD_DIR)/$(ELF) $(BINARY)
 
 $(BUILD_DIR):
-	@echo Generating Directory $(BUILD_DIR)
+	@echo Creating Directory $@
 	@mkdir $(BUILD_DIR)
 
 $(BUILD_DIR)/$(ELF): $(ASM_OBJ) $(C_OBJ)
-	@echo Linking Objects to target $(ELF)
+	@echo Linking Objects to $@
 	@$(LD) $(LD_CONFIG) $(LD_FLAGS) -o $(BUILD_DIR)/$(ELF) $(ASM_OBJ) $(C_OBJ)
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/*/%.s
@@ -46,18 +46,18 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 
 clean:
 	@if [ -d $(BUILD_DIR) ]; then\
-		echo Removing $(BUILD_DIR);\
+		echo Removing Directory $(BUILD_DIR);\
 		rm -rf $(BUILD_DIR);\
 	fi
 
-cleaner:
+cleaner: $(SUBDIR)
 	@make clean
 	@if [ -e $(BINARY) ]; then\
-		echo Cleaning binary $(BINARY);\
+		echo Removing Binary $(BINARY);\
 		rm -f $(BINARY);\
 	fi
 
-push: $(SUBDIR)
+push:
 	@make cleaner
 	git add .
 	git commit -m "update"

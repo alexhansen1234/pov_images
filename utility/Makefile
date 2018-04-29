@@ -6,7 +6,6 @@ CC := gcc
 C_FLAGS := -O3
 CPP_FLAGS :=
 
-# Directories
 SRC_DIR := src
 INCLUDE_DIR := include
 BIN_DIR := bin
@@ -23,7 +22,7 @@ $(TARGET): $(BIN_DIR) $(OBJ)
 
 $(BIN_DIR):
 	@echo Creating directory $@
-	@mkdir $(BIN_DIR)
+	@mkdir $@
 
 $(BIN_DIR)/%.o: $(SRC_DIR)/%.c
 	@echo Compiling $< to $@
@@ -31,8 +30,8 @@ $(BIN_DIR)/%.o: $(SRC_DIR)/%.c
 
 clean:
 	@if [ -d $(BIN_DIR) ]; then\
-		echo Cleaning $(BIN_DIR);\
 		echo Removing $(OBJ);\
+		echo Removing Directory $(BIN_DIR);\
 		rm -f -r $(BIN_DIR);\
 	fi
 
