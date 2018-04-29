@@ -9,6 +9,7 @@ CPP_FLAGS :=
 SRC_DIR := src
 INCLUDE_DIR := include
 BIN_DIR := bin
+DIR := $(lastword $(subst /, , $(shell pwd)))
 
 # Libraries
 LIBS :=
@@ -30,14 +31,14 @@ $(BIN_DIR)/%.o: $(SRC_DIR)/%.c
 
 clean:
 	@if [ -d $(BIN_DIR) ]; then\
-		echo Removing $(OBJ);\
-		echo Removing Directory $(BIN_DIR);\
+		echo Removing $(patsubst %, $(DIR)/%, $(OBJ));\
+		echo Removing Directory $(patsubst %, $(DIR)/%, $(BIN_DIR));\
 		rm -f -r $(BIN_DIR);\
 	fi
 
 cleaner:
 	@make clean
 	@if [ -e $(TARGET) ]; then\
-		echo Removing $(TARGET);\
+		echo Removing $(DIR)/$(TARGET);\
 		rm $(TARGET);\
 	fi
