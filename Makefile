@@ -61,7 +61,7 @@ push:
 	@make cleaner
 	git add .
 	git commit -m "update"
-	git -f push origin master
+	git push origin master -f
 
 $(SUBDIR):
 	@if [ -e $@/Makefile ]; then\
