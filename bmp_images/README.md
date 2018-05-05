@@ -2,7 +2,7 @@ Place Bitmap Images in this Directory
 
 Bitmaps must be compressed to Run Length Encoding 4 format
 
-Build Image Headers by runnning
+To build image headers:
 
     cd /path/to/pov_images/utility
 
@@ -10,10 +10,10 @@ Build Image Headers by runnning
 
     image_header_gen /path/to/$(bmp_file).bmp
 
-The output from image_header_gen wil be located in directory
+Header files will be placed in:
 
     /path/to/pov_images/src/image_headers/
 
-With file name
+With file name:
 
     /$(bmp_file)_image.s
