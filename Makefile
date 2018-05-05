@@ -1,9 +1,21 @@
 BINARY := pov_display.hex
 ELF := pov_display.elf
 
+# Flashing Configuration
+DEVICE := ATMEGA328p
+AVRDUDE := avrdude
+ISP := usbtiny
+ARCH := m328
+HFUSE := 0xD9
+EFUSE := 0xFD
+LFUSE := 0xD6
+FLASH_ARGS := -U flash:w:$(BINARY) -U hfuse:w:$(HFUSE):m -U efuse:w:$(EFUSE):m -U lfuse:w:$(LFUSE):m
+
+# Compiler Configuration
 CC := avr-gcc
 CC_FLAGS := -Wall -c -mmcu=atmega328p
 
+# Linker Configuration
 LD := avr-ld
 LD_FLAGS := -e init
 LD_CONFIG := -T ./config/avr2.xn
@@ -11,6 +23,7 @@ LD_CONFIG := -T ./config/avr2.xn
 OBJCOPY := avr-objcopy
 OBJCOPY_FLAGS := -O ihex
 
+# Directory Configuration
 SRC_DIR := src
 INCLUDE_DIR := include
 BUILD_DIR := src/bin
@@ -23,6 +36,12 @@ C_OBJ := $(patsubst %.c, $(BUILD_DIR)/%.o, $(notdir $(C_SRC)))
 
 SUBDIR := $(wildcard */.)
 SUBDIR_CMD := cleaner
+
+flash: $(BINARY)
+	@echo Flashing $(DEVICE)
+	@echo Binary Size: $$(echo $$(avr-size pov_display.hex | awk '{print $$4}') | awk '{print $$2}')
+	@$(AVRDUDE) -c $(ISP) -p $(ARCH) -U flash:w:$(BINARY) $(FLASH_ARGS)
+
 
 $(BINARY): $(BUILD_DIR) $(BUILD_DIR)/$(ELF)
 	@echo Generating Binary $@
