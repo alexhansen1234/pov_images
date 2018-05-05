@@ -78,12 +78,12 @@ cleaner: $(SUBDIR)
 
 # Git Commands
 
-# Create new branch by typing
-# $ make checkout $name_of_branch
-checkout:
-	git checkout $(filter-out $@, $(MAKECMDGOALS))
-
-
+# Push current repository to current working branch
+push:
+	@make cleaner
+	git add .
+	git commit -m "update"
+	git push
 
 # Push current repository to master branch
 push master:
