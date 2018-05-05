@@ -1,5 +1,0 @@
-#!/bin/bash
-
-args=($@)
-
-avrdude -c usbtiny -p m328 -U flash:w:${args[0]} -U hfuse:w:0xD9:m -U efuse:w:0xFD:m -U lfuse:w:0xD6:m
