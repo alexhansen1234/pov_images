@@ -39,7 +39,7 @@ SUBDIR_CMD := cleaner
 
 flash: $(BINARY)
 	@echo Flashing $(DEVICE)
-	@echo Binary Size: $$(echo $$(avr-size pov_display.hex | awk '{print $$4}') | awk '{print $$2}')
+	@echo $(BINARY):$$(echo $$(avr-size pov_display.hex | awk '{print $$4}') | awk '{print $$2}') bytes
 	@$(AVRDUDE) -c $(ISP) -p $(ARCH) -U flash:w:$(BINARY) $(FLASH_ARGS)
 
 
@@ -76,11 +76,21 @@ cleaner: $(SUBDIR)
 		rm -f $(BINARY);\
 	fi
 
-push:
+# Git Commands
+
+# Create new branch by typing
+# $ make checkout $name_of_branch
+checkout:
+	git checkout -b $(filter-out $@, $(MAKECMDGOALS))
+
+
+push master:
 	@make cleaner
 	git add .
 	git commit -m "update"
 	git push origin master
+
+
 
 $(SUBDIR):
 	@if [ -e $@/Makefile ]; then\
