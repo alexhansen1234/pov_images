@@ -86,7 +86,7 @@ push:
 	git push
 
 # Push current repository to master branch
-push master:
+push-master:
 	@make cleaner
 	git add .
 	git commit -m "update"
