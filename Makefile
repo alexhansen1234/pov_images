@@ -90,8 +90,6 @@ push-master:
 	git commit -m "update"
 	git push origin master
 
-
-
 $(SUBDIR):
 	@if [ -e $@/Makefile ]; then\
 		$(MAKE) -C $@ $(SUBDIR_CMD);\
