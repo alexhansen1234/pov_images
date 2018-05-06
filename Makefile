@@ -9,7 +9,7 @@ ARCH := m328
 HFUSE := 0xD9
 EFUSE := 0xFD
 LFUSE := 0xD6
-FLASH_ARGS := -U flash:w:$(BINARY) -U hfuse:w:$(HFUSE):m -U efuse:w:$(EFUSE):m -U lfuse:w:$(LFUSE):m
+FLASH_ARGS := -U hfuse:w:$(HFUSE):m -U efuse:w:$(EFUSE):m -U lfuse:w:$(LFUSE):m
 
 # Compiler Configuration
 CC := avr-gcc
@@ -29,19 +29,13 @@ INCLUDE_DIR := include
 BUILD_DIR := src/bin
 
 ASM_SRC := $(wildcard $(SRC_DIR)/*/*.s)
-C_SRC := $(wildcard $(SRC_DIR)/*.c)
+C_SRC += $(wildcard $(SRC_DIR)/*/*.c)
 
 ASM_OBJ := $(patsubst %.s, $(BUILD_DIR)/%.o, $(notdir $(ASM_SRC)))
 C_OBJ := $(patsubst %.c, $(BUILD_DIR)/%.o, $(notdir $(C_SRC)))
 
 SUBDIR := $(wildcard */.)
 SUBDIR_CMD := cleaner
-
-flash: $(BINARY)
-	@echo Flashing $(DEVICE)
-	@echo $(BINARY):$$(echo $$(avr-size pov_display.hex | awk '{print $$4}') | awk '{print $$2}') bytes
-	@$(AVRDUDE) -c $(ISP) -p $(ARCH) -U flash:w:$(BINARY) $(FLASH_ARGS)
-
 
 $(BINARY): $(BUILD_DIR) $(BUILD_DIR)/$(ELF)
 	@echo Generating Binary $@
@@ -59,9 +53,14 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/*/%.s
 	@echo Assembling $@ from $<
 	@$(CC) $(CC_FLAGS) -o $(BUILD_DIR)/$(notdir $@) $<
 
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
+$(BUILD_DIR)/%.o: $(SRC_DIR)/*/%.c
 	@echo Compiling $@ from $<
 	@$(CC) $(CC_FLAGS) -o $(BUILD_DIR)/$(notdir $@) $<
+
+flash: $(BINARY)
+	@echo Flashing $(DEVICE)
+	@echo $(BINARY):$$(echo $$(avr-size pov_display.hex | awk '{print $$4}') | awk '{print $$2}') bytes
+	$(AVRDUDE) -c $(ISP) -p $(ARCH) -U flash:w:$(BINARY) $(FLASH_ARGS)
 
 clean:
 	@if [ -d $(BUILD_DIR) ]; then\
@@ -77,7 +76,6 @@ cleaner: $(SUBDIR)
 	fi
 
 # Git Commands
-
 # Push current repository to current working branch
 push:
 	@make cleaner
