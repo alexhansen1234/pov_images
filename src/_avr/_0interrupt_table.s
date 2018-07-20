@@ -1,14 +1,10 @@
-/*
- *  Interrupt Table must be assembled to object file, and included
- *  first in the linking stage of build.
- */
+/* This file needs to be first in memory, at address 0x0000 */
 
 .include "./src/_avr/atmega328mm.s"
 
-.global init
-.text
-init:
-.ORG 0x0000           ;; Interrupts, highest priority first
+.global start
+.section .interrupt, "ax"
+start:
 jmp RESET             ;; 3  Reset Handler
 jmp INT0              ;; 3  External Interrupt Request 0
 jmp INT1              ;; 3  External Interrupt Request 1
@@ -35,7 +31,7 @@ jmp EE_READY          ;; 3  EEPROM Ready Handler
 jmp ANALOG_COMP       ;; 3  Analog Comparator Handler
 jmp TWI               ;; 3  2-wire Serial Interface Handler
 jmp SPM_READY         ;; 3  Store Program Memory Ready Handler
-
+.text
 RESET:
 ldi r16,  lo8(RAMEND)
 out SPL,  r16

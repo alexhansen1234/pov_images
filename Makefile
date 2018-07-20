@@ -17,8 +17,7 @@ CC_FLAGS := -Wall -c -mmcu=atmega328p
 
 # Linker Configuration
 LD := avr-ld
-LD_FLAGS := -e init
-LD_CONFIG := -T ./config/avr2.xn
+LD_CONFIG := -T ./config/linker.ld
 
 OBJCOPY := avr-objcopy
 OBJCOPY_FLAGS := -O ihex
@@ -51,11 +50,11 @@ $(BUILD_DIR)/$(ELF): $(ASM_OBJ) $(C_OBJ)
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/*/%.s
 	@echo Assembling $@ from $<
-	@$(CC) $(CC_FLAGS) -o $(BUILD_DIR)/$(notdir $@) $<
+	@$(CC) $(CC_FLAGS) -Wa,-gstabs -o $(BUILD_DIR)/$(notdir $@) $<
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/*/%.c
 	@echo Compiling $@ from $<
-	@$(CC) $(CC_FLAGS) -o $(BUILD_DIR)/$(notdir $@) $<
+	@$(CC) $(CC_FLAGS) -g -o $(BUILD_DIR)/$(notdir $@) $<
 
 flash: $(BINARY)
 	@echo Flashing $(DEVICE)

@@ -1,6 +1,6 @@
 #include <stdint.h>
-#include "../include/progmem.h"
-#include "../include/apa102.h"
+#include "../../include/progmem.h"
+#include "../../include/apa102.h"
 
 #define NUM_PIXELS 144
 
